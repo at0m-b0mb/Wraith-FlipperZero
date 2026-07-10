@@ -4,6 +4,7 @@ typedef enum {
     StartIndexWifi,
     StartIndexBluetooth,
     StartIndexGps,
+    StartIndexDevice,
     StartIndexConsole,
     StartIndexSettings,
     StartIndexAbout,
@@ -24,6 +25,7 @@ void wraith_scene_start_on_enter(void* context) {
     submenu_add_item(
         submenu, "Bluetooth", StartIndexBluetooth, wraith_scene_start_submenu_cb, app);
     submenu_add_item(submenu, "GPS / Wardrive", StartIndexGps, wraith_scene_start_submenu_cb, app);
+    submenu_add_item(submenu, "Device", StartIndexDevice, wraith_scene_start_submenu_cb, app);
     submenu_add_item(submenu, "Console", StartIndexConsole, wraith_scene_start_submenu_cb, app);
     submenu_add_item(submenu, "Settings", StartIndexSettings, wraith_scene_start_submenu_cb, app);
     submenu_add_item(submenu, "About", StartIndexAbout, wraith_scene_start_submenu_cb, app);
@@ -54,6 +56,10 @@ bool wraith_scene_start_on_event(void* context, SceneManagerEvent event) {
             break;
         case StartIndexGps:
             scene_manager_next_scene(app->scene_manager, WraithSceneGps);
+            consumed = true;
+            break;
+        case StartIndexDevice:
+            scene_manager_next_scene(app->scene_manager, WraithSceneDevice);
             consumed = true;
             break;
         case StartIndexConsole:

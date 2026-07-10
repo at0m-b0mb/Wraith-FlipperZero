@@ -81,6 +81,24 @@ void wraith_launch(WraithApp* app, const char* title, const char* cmd, bool is_a
     }
 }
 
+void wraith_prompt(
+    WraithApp* app,
+    const char* header,
+    const char* prefix,
+    const char* after_title,
+    const char* after_cmd) {
+    furi_assert(app);
+    strncpy(app->input_header, header, sizeof(app->input_header) - 1);
+    app->input_header[sizeof(app->input_header) - 1] = '\0';
+    strncpy(app->input_prefix, prefix, sizeof(app->input_prefix) - 1);
+    app->input_prefix[sizeof(app->input_prefix) - 1] = '\0';
+    strncpy(app->input_after_title, after_title ? after_title : "", sizeof(app->input_after_title) - 1);
+    app->input_after_title[sizeof(app->input_after_title) - 1] = '\0';
+    strncpy(app->input_after_cmd, after_cmd ? after_cmd : "", sizeof(app->input_after_cmd) - 1);
+    app->input_after_cmd[sizeof(app->input_after_cmd) - 1] = '\0';
+    scene_manager_next_scene(app->scene_manager, WraithSceneInput);
+}
+
 /* ---------------- UART worker callback ---------------- */
 static void wraith_uart_line_cb(void* context, const char* line) {
     WraithApp* app = context;

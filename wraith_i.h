@@ -38,6 +38,7 @@ typedef enum {
     WraithCustomEventConfirmStart = 1000,
     WraithCustomEventConsoleSend,
     WraithCustomEventSelectApplied,
+    WraithCustomEventInputDone,
 } WraithCustomEvent;
 
 typedef enum {
@@ -83,6 +84,13 @@ typedef struct {
     char input_buf[WRAITH_CMD_MAX];
     char select_kind; // 'a' = AP, 's' = station (for the Select scene)
 
+    // generic input-prompt scene: build "<prefix><typed value>", then optionally
+    // drop into the console running <after_cmd>
+    char input_prefix[24];
+    char input_header[32];
+    char input_after_cmd[24];
+    char input_after_title[WRAITH_TITLE_MAX];
+
     // when true, leaving the console scene must NOT stop the running op
     // (used when we dip into the raw-command sender and come straight back)
     bool console_keep_running;
@@ -96,6 +104,14 @@ const char* wraith_uart_channel_label(uint8_t index);
 /* ---- wraith.c helpers ---- */
 // Stage a command and route to the console (through the confirm gate for attacks).
 void wraith_launch(WraithApp* app, const char* title, const char* cmd, bool is_attack);
+// Open the input-prompt scene: on commit, send "<prefix><value>"; if after_cmd is
+// non-empty, then open the console running after_cmd (titled after_title).
+void wraith_prompt(
+    WraithApp* app,
+    const char* header,
+    const char* prefix,
+    const char* after_title,
+    const char* after_cmd);
 void wraith_link_ensure(WraithApp* app); // acquire UART + worker if not already up
 void wraith_link_disarm(WraithApp* app); // stop the current op and release the UART
 void wraith_link_send(WraithApp* app, const char* cmd); // raw send (adds nothing)

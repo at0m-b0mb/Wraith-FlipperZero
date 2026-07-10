@@ -175,7 +175,7 @@ def confirm(op):
 
 def main():
     save(
-        submenu("Wraith", ["Wi-Fi", "Bluetooth", "GPS / Wardrive", "Console"], 0),
+        submenu("Wraith", ["Wi-Fi", "Bluetooth", "GPS / Wardrive", "Device"], 0),
         "screen_menu.png",
     )
     save(
@@ -185,6 +185,10 @@ def main():
             0,
         ),
         "screen_attacks.png",
+    )
+    save(
+        submenu("BLE Spam", ["Apple", "Samsung", "Google", "Windows"], 0),
+        "screen_ble.png",
     )
     save(
         console(

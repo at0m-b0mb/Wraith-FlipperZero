@@ -3,6 +3,8 @@
 typedef enum {
     BtSniff,
     BtSkimmer,
+    BtAirtag,
+    BtSpam,
 } BtIndex;
 
 static void wraith_scene_bluetooth_cb(void* context, uint32_t index) {
@@ -18,6 +20,8 @@ void wraith_scene_bluetooth_on_enter(void* context) {
     submenu_set_header(menu, "Bluetooth");
     submenu_add_item(menu, "Sniff Bluetooth", BtSniff, wraith_scene_bluetooth_cb, app);
     submenu_add_item(menu, "Detect Skimmers", BtSkimmer, wraith_scene_bluetooth_cb, app);
+    submenu_add_item(menu, "Sniff AirTags", BtAirtag, wraith_scene_bluetooth_cb, app);
+    submenu_add_item(menu, "BLE Spam", BtSpam, wraith_scene_bluetooth_cb, app);
 
     submenu_set_selected_item(
         menu, scene_manager_get_scene_state(app->scene_manager, WraithSceneBluetooth));
@@ -38,6 +42,12 @@ bool wraith_scene_bluetooth_on_event(void* context, SceneManagerEvent event) {
             break;
         case BtSkimmer:
             wraith_launch(app, "Detect Skimmers", MARAUDER_CMD_BT_SKIMMER, false);
+            break;
+        case BtAirtag:
+            wraith_launch(app, "Sniff AirTags", MARAUDER_CMD_BT_AIRTAG, false);
+            break;
+        case BtSpam:
+            scene_manager_next_scene(app->scene_manager, WraithSceneBlespam);
             break;
         default:
             consumed = false;
