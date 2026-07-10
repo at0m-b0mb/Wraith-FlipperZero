@@ -1,0 +1,15 @@
+App(
+    appid="wraith",
+    name="Wraith",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="wraith_app",
+    stack_size=8 * 1024,
+    fap_category="GPIO",
+    fap_icon="icons/wraith_10px.png",
+    fap_icon_assets="icons",
+    fap_author="at0m-b0mb",
+    fap_weburl="https://github.com/at0m-b0mb/Wraith-FlipperZero",
+    fap_version="1.0",
+    fap_description="A polished controller for an ESP32 Marauder companion board (dual-band 2.4/5 GHz Wi-Fi, BLE, GPS, 433 MHz). Drives the Marauder serial CLI over the Flipper GPIO/UART: scan APs & stations, run sniffers (beacon/deauth/PMKID/pwnagotchi), launch deauth/beacon/probe attacks, GPS wardrive, and a live serial console that speaks any Marauder command. For authorised testing on networks you own.",
+    requires=["gui"],
+)
