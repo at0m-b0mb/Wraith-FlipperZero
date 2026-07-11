@@ -46,13 +46,16 @@
 ## ✨ Features
 
 - 👻 **Live serial console** — the heart of Wraith. Every operation streams the board's real output into a scrolling terminal with a branded header, link indicator and channel readout. Scroll back through history, or hit **OK** to type *any* raw Marauder command.
-- 📡 **Wi-Fi (2.4 + 5 GHz)** — scan APs & stations, a **channel analyzer**, **set channel** (2.4/5 GHz), and the full sniffer set: beacons, probes, deauth, **PMKID**, **pwnagotchi**, ESP and **raw**.
-- 🎯 **Targeting** — list APs/stations, select one by index, select all, or clear the lists — then the attacks act on your selection.
-- 💥 **Attacks** — deauth flood, beacon spam (list / random / AP-clone), probe flood and the classic rickroll beacon. Every attack is **gated behind a confirmation** you can toggle off.
+- 📡 **Wi-Fi (2.4 + 5 GHz)** — scan APs, stations or both, **set channel** (2.4/5 GHz), and the full sniffer set: beacons, probes, deauth, **PMKID** (+ active), **pwnagotchi**, **raw**, plus **Pineapple** and **Karma / multi-SSID** detectors and **WPA3 SAE**.
+- 🎯 **Targeting** — list APs/stations, select by index or all, clear the lists, **save / load** them to SD, and **spoof MACs** (random or cloned) — attacks act on your selection.
+- 💥 **Attacks** — deauth, bad-msg, beacon spam (list / random / AP-clone), probe flood, rickroll, funny, **WPA3 SAE**, **channel-switch (CSA)** and **quiet** floods. Every attack is **gated behind a confirmation** you can toggle off.
 - 📛 **SSID list builder** — generate random SSIDs, add named ones, remove or clear them, then feed **Beacon Spam (list)**.
-- 🔵 **Bluetooth** — sniff BLE, detect card skimmers, **scan for AirTags**, and **BLE Spam** for Apple / Samsung / Google / Windows (plus **Sour Apple**).
-- 🛰️ **GPS / Wardrive** — read live GPS data and run AP / station **wardriving** with the onboard GPS antenna.
-- 🧰 **Device tools** — dump the command **help**, read **board settings**, clear all lists, **update firmware** (SD) and reboot.
+- 🔬 **Analysis** — live **packet count**, **MAC tracking**, RSSI **fox-hunt** and **karma**.
+- 🔵 **Bluetooth** — sniff BLE, detect **card skimmers**, **AirTags** and nearby **Flippers**, spoof a scanned AirTag, and **BLE Spam** (Sour Apple, Apple Juice, Samsung, Google, Windows, Flipper, All).
+- 🛰️ **GPS / Wardrive** — live GPS data, raw **NMEA**, a **GPS tracker**, and **wardriving** (+ POI) with the onboard antenna.
+- 🌐 **Network** — **join** a network, then **ping** and **ARP** scan it.
+- 🕳️ **Evil Portal** — point a captive portal at a scanned AP and start it (needs a portal on the SD card).
+- 🧰 **Device tools** — dump command **help**, read **board settings**, list SD files, drive the **LED** & **brightness**, clear all lists, **update firmware** (SD) and reboot.
 - 🎚️ **Tunable** — pick the UART pins (13/14 or 15/16), toggle autoscroll, the attack-confirm gate, and sound / vibration / LED feedback.
 - 🔌 **Firmware-agnostic** — menus cover the stable Marauder commands; the Console reaches everything else, so Wraith keeps working as the firmware evolves.
 - 🕶️ **Local & private** — it all runs on your own hardware. No cloud, no accounts, nothing phones home.
@@ -127,18 +130,21 @@ command (`help`, `channel -s 6`, `evilportal`, …) and watch it run.
 
 | Menu | Marauder command |
 |---|---|
-| Scan APs / Stations | `scanap` · `scansta` |
-| Channel Analyzer · Set Channel | `sigmon` · `channel -s <n>` |
-| Sniffers | `sniffbeacon` · `sniffprobe` · `sniffdeauth` · `sniffpmkid` · `sniffpwn` · `sniffesp` · `sniffraw` |
-| Targets | `list -a/-s` · `select -a/-s <n>` · `select -a all` · `clearlist -a/-s` |
+| Scan APs / Stations / All | `scanap` · `scansta` · `scanall` |
+| Set Channel | `channel -s <n>` (2.4 GHz 1–14, 5 GHz 36–165) |
+| Sniffers | `sniffbeacon` · `sniffprobe` · `sniffdeauth` · `sniffpmkid [-d]` · `sniffpwn` · `sniffraw` · `sniffpinescan` · `sniffmultissid` · `sniffsae` |
+| Analysis | `packetcount` · `mactrack` · `foxhunt -w <n>` · `karma -p <n>` |
+| Targets | `list -a/-s` · `select -a/-s <n>` · `select -a all` · `clearlist -a/-s` · `save -a/-s` · `load -a/-s` |
+| MAC | `randapmac` · `randstamac` · `cloneapmac -a <n>` · `clonestamac -s <n>` |
 | SSID List | `ssid -a -g <n>` · `ssid -a -n <name>` · `ssid -r <n>` · `list -c` · `clearlist -c` |
-| Deauth Flood | `attack -t deauth` |
-| Beacon Spam (list / random / AP) | `attack -t beacon -l/-r/-a` |
-| Probe Flood · Rickroll | `attack -t probe` · `attack -t rickroll` |
-| Bluetooth | `sniffbt` · `sniffskim` · `sniffairtag` |
-| BLE Spam | `blespam -t apple/samsung/google/windows/all` · `sourapple` |
-| GPS / Wardrive | `gpsdata` · `wardrive` · `stationwardrive` |
-| Device | `help` · `settings` · `clearlist -a/-s/-c` · `update` · `reboot` |
+| Attacks | `attack -t deauth/badmsg/beacon/probe/rickroll/funny/sae/csa/quiet` (beacon `-l/-r/-a`) |
+| Evil Portal | `evilportal -c setap <n>` · `evilportal -c start` |
+| Bluetooth | `sniffbt [-t airtag/flipper]` · `sniffskim` · `spoofat -t <n>` |
+| BLE Spam | `blespam -t sourapple/applejuice/samsung/google/windows/flipper/all` |
+| Network | `join -a <n> -p <pass>` · `pingscan` · `arpscan` |
+| GPS / Wardrive | `gpsdata` · `nmea` · `gpstracker` · `wardrive` · `wardrivepoi` |
+| Device | `help` · `settings` · `ls` · `led` · `brightness -s <0-9>` · `clearlist -a/-s/-c` · `update -s` · `reboot` |
+| Stop / Console | `stopscan` · plus any command you type |
 
 ---
 

@@ -6,9 +6,14 @@ typedef enum {
     TgtSelectAp,
     TgtSelectAllAp,
     TgtClearAp,
+    TgtSaveAp,
+    TgtLoadAp,
     TgtListSta,
     TgtSelectSta,
     TgtClearSta,
+    TgtSaveSta,
+    TgtLoadSta,
+    TgtMac,
 } TgtIndex;
 
 static void wraith_scene_target_cb(void* context, uint32_t index) {
@@ -35,9 +40,14 @@ void wraith_scene_target_on_enter(void* context) {
     submenu_add_item(menu, "Select AP by #", TgtSelectAp, wraith_scene_target_cb, app);
     submenu_add_item(menu, "Select ALL APs", TgtSelectAllAp, wraith_scene_target_cb, app);
     submenu_add_item(menu, "Clear AP list", TgtClearAp, wraith_scene_target_cb, app);
+    submenu_add_item(menu, "Save APs (SD)", TgtSaveAp, wraith_scene_target_cb, app);
+    submenu_add_item(menu, "Load APs (SD)", TgtLoadAp, wraith_scene_target_cb, app);
     submenu_add_item(menu, "List Stations", TgtListSta, wraith_scene_target_cb, app);
     submenu_add_item(menu, "Select Station by #", TgtSelectSta, wraith_scene_target_cb, app);
     submenu_add_item(menu, "Clear Station list", TgtClearSta, wraith_scene_target_cb, app);
+    submenu_add_item(menu, "Save Stations (SD)", TgtSaveSta, wraith_scene_target_cb, app);
+    submenu_add_item(menu, "Load Stations (SD)", TgtLoadSta, wraith_scene_target_cb, app);
+    submenu_add_item(menu, "MAC Spoofing", TgtMac, wraith_scene_target_cb, app);
 
     submenu_set_selected_item(
         menu, scene_manager_get_scene_state(app->scene_manager, WraithSceneTarget));
@@ -66,6 +76,12 @@ bool wraith_scene_target_on_event(void* context, SceneManagerEvent event) {
         case TgtClearAp:
             quick(app, MARAUDER_CMD_CLEAR_AP, "AP List", MARAUDER_CMD_LIST_AP);
             break;
+        case TgtSaveAp:
+            quick(app, MARAUDER_CMD_SAVE_AP, "AP List", MARAUDER_CMD_LIST_AP);
+            break;
+        case TgtLoadAp:
+            quick(app, MARAUDER_CMD_LOAD_AP, "AP List", MARAUDER_CMD_LIST_AP);
+            break;
         case TgtListSta:
             wraith_launch(app, "Station List", MARAUDER_CMD_LIST_STA, false);
             break;
@@ -75,6 +91,15 @@ bool wraith_scene_target_on_event(void* context, SceneManagerEvent event) {
             break;
         case TgtClearSta:
             quick(app, MARAUDER_CMD_CLEAR_STA, "Station List", MARAUDER_CMD_LIST_STA);
+            break;
+        case TgtSaveSta:
+            quick(app, MARAUDER_CMD_SAVE_STA, "Station List", MARAUDER_CMD_LIST_STA);
+            break;
+        case TgtLoadSta:
+            quick(app, MARAUDER_CMD_LOAD_STA, "Station List", MARAUDER_CMD_LIST_STA);
+            break;
+        case TgtMac:
+            scene_manager_next_scene(app->scene_manager, WraithSceneMac);
             break;
         default:
             consumed = false;

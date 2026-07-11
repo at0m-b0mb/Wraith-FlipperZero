@@ -1,12 +1,13 @@
 #include "../wraith_i.h"
 
 typedef enum {
-    BleSpamApple,
-    BleSpamSamsung,
-    BleSpamGoogle,
-    BleSpamWindows,
-    BleSpamAll,
     BleSourApple,
+    BleAppleJuice,
+    BleSamsung,
+    BleGoogle,
+    BleWindows,
+    BleFlipper,
+    BleAll,
 } BleSpamIndex;
 
 static void wraith_scene_blespam_cb(void* context, uint32_t index) {
@@ -20,12 +21,13 @@ void wraith_scene_blespam_on_enter(void* context) {
 
     submenu_reset(menu);
     submenu_set_header(menu, "BLE Spam");
-    submenu_add_item(menu, "Apple", BleSpamApple, wraith_scene_blespam_cb, app);
-    submenu_add_item(menu, "Samsung", BleSpamSamsung, wraith_scene_blespam_cb, app);
-    submenu_add_item(menu, "Google", BleSpamGoogle, wraith_scene_blespam_cb, app);
-    submenu_add_item(menu, "Windows", BleSpamWindows, wraith_scene_blespam_cb, app);
-    submenu_add_item(menu, "All Brands", BleSpamAll, wraith_scene_blespam_cb, app);
     submenu_add_item(menu, "Sour Apple", BleSourApple, wraith_scene_blespam_cb, app);
+    submenu_add_item(menu, "Apple Juice", BleAppleJuice, wraith_scene_blespam_cb, app);
+    submenu_add_item(menu, "Samsung", BleSamsung, wraith_scene_blespam_cb, app);
+    submenu_add_item(menu, "Google", BleGoogle, wraith_scene_blespam_cb, app);
+    submenu_add_item(menu, "Windows", BleWindows, wraith_scene_blespam_cb, app);
+    submenu_add_item(menu, "Flipper", BleFlipper, wraith_scene_blespam_cb, app);
+    submenu_add_item(menu, "All Brands", BleAll, wraith_scene_blespam_cb, app);
 
     submenu_set_selected_item(
         menu, scene_manager_get_scene_state(app->scene_manager, WraithSceneBlespam));
@@ -41,23 +43,26 @@ bool wraith_scene_blespam_on_event(void* context, SceneManagerEvent event) {
         scene_manager_set_scene_state(app->scene_manager, WraithSceneBlespam, event.event);
         consumed = true;
         switch(event.event) {
-        case BleSpamApple:
-            wraith_launch(app, "BLE Spam Apple", MARAUDER_CMD_BLE_SPAM_APPLE, true);
-            break;
-        case BleSpamSamsung:
-            wraith_launch(app, "BLE Spam Samsung", MARAUDER_CMD_BLE_SPAM_SAMSUNG, true);
-            break;
-        case BleSpamGoogle:
-            wraith_launch(app, "BLE Spam Google", MARAUDER_CMD_BLE_SPAM_GOOGLE, true);
-            break;
-        case BleSpamWindows:
-            wraith_launch(app, "BLE Spam Windows", MARAUDER_CMD_BLE_SPAM_WINDOWS, true);
-            break;
-        case BleSpamAll:
-            wraith_launch(app, "BLE Spam All", MARAUDER_CMD_BLE_SPAM_ALL, true);
-            break;
         case BleSourApple:
             wraith_launch(app, "Sour Apple", MARAUDER_CMD_BLE_SOURAPPLE, true);
+            break;
+        case BleAppleJuice:
+            wraith_launch(app, "Apple Juice", MARAUDER_CMD_BLE_APPLEJUICE, true);
+            break;
+        case BleSamsung:
+            wraith_launch(app, "BLE Spam Samsung", MARAUDER_CMD_BLE_SAMSUNG, true);
+            break;
+        case BleGoogle:
+            wraith_launch(app, "BLE Spam Google", MARAUDER_CMD_BLE_GOOGLE, true);
+            break;
+        case BleWindows:
+            wraith_launch(app, "BLE Spam Windows", MARAUDER_CMD_BLE_WINDOWS, true);
+            break;
+        case BleFlipper:
+            wraith_launch(app, "BLE Spam Flipper", MARAUDER_CMD_BLE_FLIPPER, true);
+            break;
+        case BleAll:
+            wraith_launch(app, "BLE Spam All", MARAUDER_CMD_BLE_ALL, true);
             break;
         default:
             consumed = false;

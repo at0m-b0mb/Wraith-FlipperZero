@@ -2,8 +2,10 @@
 
 typedef enum {
     BtSniff,
-    BtSkimmer,
     BtAirtag,
+    BtFlipper,
+    BtSkimmer,
+    BtSpoofAt,
     BtSpam,
 } BtIndex;
 
@@ -19,8 +21,10 @@ void wraith_scene_bluetooth_on_enter(void* context) {
     submenu_reset(menu);
     submenu_set_header(menu, "Bluetooth");
     submenu_add_item(menu, "Sniff Bluetooth", BtSniff, wraith_scene_bluetooth_cb, app);
+    submenu_add_item(menu, "Detect AirTags", BtAirtag, wraith_scene_bluetooth_cb, app);
+    submenu_add_item(menu, "Detect Flippers", BtFlipper, wraith_scene_bluetooth_cb, app);
     submenu_add_item(menu, "Detect Skimmers", BtSkimmer, wraith_scene_bluetooth_cb, app);
-    submenu_add_item(menu, "Sniff AirTags", BtAirtag, wraith_scene_bluetooth_cb, app);
+    submenu_add_item(menu, "Spoof AirTag #", BtSpoofAt, wraith_scene_bluetooth_cb, app);
     submenu_add_item(menu, "BLE Spam", BtSpam, wraith_scene_bluetooth_cb, app);
 
     submenu_set_selected_item(
@@ -40,11 +44,17 @@ bool wraith_scene_bluetooth_on_event(void* context, SceneManagerEvent event) {
         case BtSniff:
             wraith_launch(app, "Sniff Bluetooth", MARAUDER_CMD_BT_SNIFF, false);
             break;
+        case BtAirtag:
+            wraith_launch(app, "Detect AirTags", MARAUDER_CMD_BT_AIRTAG, false);
+            break;
+        case BtFlipper:
+            wraith_launch(app, "Detect Flippers", MARAUDER_CMD_BT_FLIPPER, false);
+            break;
         case BtSkimmer:
             wraith_launch(app, "Detect Skimmers", MARAUDER_CMD_BT_SKIMMER, false);
             break;
-        case BtAirtag:
-            wraith_launch(app, "Sniff AirTags", MARAUDER_CMD_BT_AIRTAG, false);
+        case BtSpoofAt:
+            wraith_prompt_run(app, "AirTag index", MARAUDER_PFX_BT_SPOOFAT, "Spoof AirTag", true);
             break;
         case BtSpam:
             scene_manager_next_scene(app->scene_manager, WraithSceneBlespam);

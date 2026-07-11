@@ -3,18 +3,14 @@
 typedef enum {
     WifiScanAp,
     WifiScanSta,
-    WifiSigmon,
+    WifiScanAll,
     WifiSetChannel,
     WifiTarget,
-    WifiSniffBeacon,
-    WifiSniffProbe,
-    WifiSniffDeauth,
-    WifiSniffPmkid,
-    WifiSniffPwn,
-    WifiSniffEsp,
-    WifiSniffRaw,
+    WifiSniffers,
+    WifiAnalysis,
     WifiSsidList,
     WifiAttacks,
+    WifiEvilPortal,
 } WifiIndex;
 
 static void wraith_scene_wifi_cb(void* context, uint32_t index) {
@@ -30,18 +26,14 @@ void wraith_scene_wifi_on_enter(void* context) {
     submenu_set_header(menu, "Wi-Fi");
     submenu_add_item(menu, "Scan APs", WifiScanAp, wraith_scene_wifi_cb, app);
     submenu_add_item(menu, "Scan Stations", WifiScanSta, wraith_scene_wifi_cb, app);
-    submenu_add_item(menu, "Channel Analyzer", WifiSigmon, wraith_scene_wifi_cb, app);
+    submenu_add_item(menu, "Scan All", WifiScanAll, wraith_scene_wifi_cb, app);
     submenu_add_item(menu, "Set Channel", WifiSetChannel, wraith_scene_wifi_cb, app);
     submenu_add_item(menu, "Targets / Select", WifiTarget, wraith_scene_wifi_cb, app);
-    submenu_add_item(menu, "Sniff Beacons", WifiSniffBeacon, wraith_scene_wifi_cb, app);
-    submenu_add_item(menu, "Sniff Probes", WifiSniffProbe, wraith_scene_wifi_cb, app);
-    submenu_add_item(menu, "Sniff Deauth", WifiSniffDeauth, wraith_scene_wifi_cb, app);
-    submenu_add_item(menu, "Sniff PMKID", WifiSniffPmkid, wraith_scene_wifi_cb, app);
-    submenu_add_item(menu, "Sniff Pwnagotchi", WifiSniffPwn, wraith_scene_wifi_cb, app);
-    submenu_add_item(menu, "Sniff ESP", WifiSniffEsp, wraith_scene_wifi_cb, app);
-    submenu_add_item(menu, "Sniff Raw", WifiSniffRaw, wraith_scene_wifi_cb, app);
+    submenu_add_item(menu, "Sniffers", WifiSniffers, wraith_scene_wifi_cb, app);
+    submenu_add_item(menu, "Analysis", WifiAnalysis, wraith_scene_wifi_cb, app);
     submenu_add_item(menu, "SSID List", WifiSsidList, wraith_scene_wifi_cb, app);
     submenu_add_item(menu, "Attacks", WifiAttacks, wraith_scene_wifi_cb, app);
+    submenu_add_item(menu, "Evil Portal", WifiEvilPortal, wraith_scene_wifi_cb, app);
 
     submenu_set_selected_item(
         menu, scene_manager_get_scene_state(app->scene_manager, WraithSceneWifi));
@@ -63,8 +55,8 @@ bool wraith_scene_wifi_on_event(void* context, SceneManagerEvent event) {
         case WifiScanSta:
             wraith_launch(app, "Scan Stations", MARAUDER_CMD_SCAN_STA, false);
             break;
-        case WifiSigmon:
-            wraith_launch(app, "Channel Analyzer", MARAUDER_CMD_SIGMON, false);
+        case WifiScanAll:
+            wraith_launch(app, "Scan All", MARAUDER_CMD_SCAN_ALL, false);
             break;
         case WifiSetChannel:
             wraith_prompt(
@@ -74,32 +66,20 @@ bool wraith_scene_wifi_on_event(void* context, SceneManagerEvent event) {
         case WifiTarget:
             scene_manager_next_scene(app->scene_manager, WraithSceneTarget);
             break;
-        case WifiSniffBeacon:
-            wraith_launch(app, "Sniff Beacons", MARAUDER_CMD_SNIFF_BEACON, false);
+        case WifiSniffers:
+            scene_manager_next_scene(app->scene_manager, WraithSceneSniffers);
             break;
-        case WifiSniffProbe:
-            wraith_launch(app, "Sniff Probes", MARAUDER_CMD_SNIFF_PROBE, false);
-            break;
-        case WifiSniffDeauth:
-            wraith_launch(app, "Sniff Deauth", MARAUDER_CMD_SNIFF_DEAUTH, false);
-            break;
-        case WifiSniffPmkid:
-            wraith_launch(app, "Sniff PMKID", MARAUDER_CMD_SNIFF_PMKID, false);
-            break;
-        case WifiSniffPwn:
-            wraith_launch(app, "Sniff Pwnagotchi", MARAUDER_CMD_SNIFF_PWN, false);
-            break;
-        case WifiSniffEsp:
-            wraith_launch(app, "Sniff ESP", MARAUDER_CMD_SNIFF_ESP, false);
-            break;
-        case WifiSniffRaw:
-            wraith_launch(app, "Sniff Raw", MARAUDER_CMD_SNIFF_RAW, false);
+        case WifiAnalysis:
+            scene_manager_next_scene(app->scene_manager, WraithSceneAnalysis);
             break;
         case WifiSsidList:
             scene_manager_next_scene(app->scene_manager, WraithSceneSsidlist);
             break;
         case WifiAttacks:
             scene_manager_next_scene(app->scene_manager, WraithSceneAttacks);
+            break;
+        case WifiEvilPortal:
+            scene_manager_next_scene(app->scene_manager, WraithSceneEvilportal);
             break;
         default:
             consumed = false;

@@ -84,12 +84,15 @@ typedef struct {
     char input_buf[WRAITH_CMD_MAX];
     char select_kind; // 'a' = AP, 's' = station (for the Select scene)
 
-    // generic input-prompt scene: build "<prefix><typed value>", then optionally
-    // drop into the console running <after_cmd>
+    // generic input-prompt scene: build "<prefix><typed value>", then either
+    //  - (launch mode) run the built command itself in the console, or
+    //  - (send mode) fire it and optionally open the console on <after_cmd>
     char input_prefix[24];
     char input_header[32];
     char input_after_cmd[24];
     char input_after_title[WRAITH_TITLE_MAX];
+    bool input_launch; // true = run the built command in the console
+    bool input_launch_attack; // gate the launched command behind the confirm prompt
 
     // when true, leaving the console scene must NOT stop the running op
     // (used when we dip into the raw-command sender and come straight back)
@@ -112,6 +115,14 @@ void wraith_prompt(
     const char* prefix,
     const char* after_title,
     const char* after_cmd);
+// Like wraith_prompt, but the built "<prefix><value>" becomes the console op
+// itself (for streaming commands such as foxhunt/karma/spoofat).
+void wraith_prompt_run(
+    WraithApp* app,
+    const char* header,
+    const char* prefix,
+    const char* title,
+    bool is_attack);
 void wraith_link_ensure(WraithApp* app); // acquire UART + worker if not already up
 void wraith_link_disarm(WraithApp* app); // stop the current op and release the UART
 void wraith_link_send(WraithApp* app, const char* cmd); // raw send (adds nothing)

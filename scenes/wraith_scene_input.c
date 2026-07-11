@@ -28,14 +28,24 @@ void wraith_scene_input_on_enter(void* context) {
 bool wraith_scene_input_on_event(void* context, SceneManagerEvent event) {
     WraithApp* app = context;
     if(event.type == SceneManagerEventTypeCustom && event.event == WraithCustomEventInputDone) {
+        if(app->input_launch) {
+            // The built command IS the console op (streaming commands).
+            scene_manager_previous_scene(app->scene_manager);
+            if(app->input_buf[0]) {
+                char cmd[128];
+                snprintf(cmd, sizeof(cmd), "%.32s%.80s", app->input_prefix, app->input_buf);
+                wraith_launch(app, app->input_after_title, cmd, app->input_launch_attack);
+            }
+            return true;
+        }
+
+        // Send mode: fire "<prefix><value>", then optionally show <after_cmd>.
         if(app->input_buf[0]) {
             char cmd[128];
             snprintf(cmd, sizeof(cmd), "%.32s%.80s\n", app->input_prefix, app->input_buf);
             wraith_link_ensure(app);
             wraith_link_send(app, cmd);
         }
-
-        // pop the input scene, then optionally open the console over the parent menu
         scene_manager_previous_scene(app->scene_manager);
         if(app->input_after_cmd[0]) {
             wraith_launch(app, app->input_after_title, app->input_after_cmd, false);

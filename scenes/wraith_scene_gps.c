@@ -2,8 +2,10 @@
 
 typedef enum {
     GpsData,
+    GpsNmea,
+    GpsTracker,
     GpsWardrive,
-    GpsWardriveSta,
+    GpsWardrivePoi,
 } GpsIndex;
 
 static void wraith_scene_gps_cb(void* context, uint32_t index) {
@@ -18,8 +20,10 @@ void wraith_scene_gps_on_enter(void* context) {
     submenu_reset(menu);
     submenu_set_header(menu, "GPS / Wardrive");
     submenu_add_item(menu, "GPS Data", GpsData, wraith_scene_gps_cb, app);
-    submenu_add_item(menu, "Wardrive (AP)", GpsWardrive, wraith_scene_gps_cb, app);
-    submenu_add_item(menu, "Wardrive (Station)", GpsWardriveSta, wraith_scene_gps_cb, app);
+    submenu_add_item(menu, "Raw NMEA", GpsNmea, wraith_scene_gps_cb, app);
+    submenu_add_item(menu, "GPS Tracker", GpsTracker, wraith_scene_gps_cb, app);
+    submenu_add_item(menu, "Wardrive", GpsWardrive, wraith_scene_gps_cb, app);
+    submenu_add_item(menu, "Wardrive + POI", GpsWardrivePoi, wraith_scene_gps_cb, app);
 
     submenu_set_selected_item(
         menu, scene_manager_get_scene_state(app->scene_manager, WraithSceneGps));
@@ -38,11 +42,17 @@ bool wraith_scene_gps_on_event(void* context, SceneManagerEvent event) {
         case GpsData:
             wraith_launch(app, "GPS Data", MARAUDER_CMD_GPS_DATA, false);
             break;
-        case GpsWardrive:
-            wraith_launch(app, "Wardrive AP", MARAUDER_CMD_WARDRIVE, false);
+        case GpsNmea:
+            wraith_launch(app, "Raw NMEA", MARAUDER_CMD_NMEA, false);
             break;
-        case GpsWardriveSta:
-            wraith_launch(app, "Wardrive STA", MARAUDER_CMD_WARDRIVE_STA, false);
+        case GpsTracker:
+            wraith_launch(app, "GPS Tracker", MARAUDER_CMD_GPS_TRACKER, false);
+            break;
+        case GpsWardrive:
+            wraith_launch(app, "Wardrive", MARAUDER_CMD_WARDRIVE, false);
+            break;
+        case GpsWardrivePoi:
+            wraith_launch(app, "Wardrive POI", MARAUDER_CMD_WARDRIVE_POI, false);
             break;
         default:
             consumed = false;

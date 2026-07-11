@@ -3,6 +3,10 @@
 typedef enum {
     DevHelp,
     DevSettings,
+    DevLs,
+    DevLedRainbow,
+    DevLedColor,
+    DevBrightness,
     DevClearAll,
     DevUpdate,
     DevReboot,
@@ -21,6 +25,10 @@ void wraith_scene_device_on_enter(void* context) {
     submenu_set_header(menu, "Device");
     submenu_add_item(menu, "Show Commands", DevHelp, wraith_scene_device_cb, app);
     submenu_add_item(menu, "Board Settings", DevSettings, wraith_scene_device_cb, app);
+    submenu_add_item(menu, "List SD Files", DevLs, wraith_scene_device_cb, app);
+    submenu_add_item(menu, "LED Rainbow", DevLedRainbow, wraith_scene_device_cb, app);
+    submenu_add_item(menu, "Set LED Color", DevLedColor, wraith_scene_device_cb, app);
+    submenu_add_item(menu, "Brightness", DevBrightness, wraith_scene_device_cb, app);
     submenu_add_item(menu, "Clear All Lists", DevClearAll, wraith_scene_device_cb, app);
     submenu_add_item(menu, "Update (SD)", DevUpdate, wraith_scene_device_cb, app);
     submenu_add_item(menu, "Reboot Board", DevReboot, wraith_scene_device_cb, app);
@@ -45,6 +53,19 @@ bool wraith_scene_device_on_event(void* context, SceneManagerEvent event) {
         case DevSettings:
             wraith_launch(app, "Board Settings", MARAUDER_CMD_SETTINGS, false);
             break;
+        case DevLs:
+            wraith_launch(app, "SD Files", MARAUDER_CMD_LS, false);
+            break;
+        case DevLedRainbow:
+            wraith_link_ensure(app);
+            wraith_link_send(app, MARAUDER_CMD_LED_RAINBOW "\n");
+            break;
+        case DevLedColor:
+            wraith_prompt(app, "LED hex (e.g. FF0000)", MARAUDER_PFX_LED, "", "");
+            break;
+        case DevBrightness:
+            wraith_prompt(app, "Brightness (0-9)", MARAUDER_PFX_BRIGHTNESS, "", "");
+            break;
         case DevClearAll:
             wraith_link_ensure(app);
             wraith_link_send(app, MARAUDER_CMD_CLEAR_AP "\n");
@@ -53,7 +74,7 @@ bool wraith_scene_device_on_event(void* context, SceneManagerEvent event) {
             wraith_launch(app, "Lists Cleared", MARAUDER_CMD_LIST_AP, false);
             break;
         case DevUpdate:
-            wraith_launch(app, "Update (SD)", MARAUDER_CMD_UPDATE, false);
+            wraith_launch(app, "Update (SD)", MARAUDER_CMD_UPDATE_SD, false);
             break;
         case DevReboot:
             wraith_launch(app, "Reboot", MARAUDER_CMD_REBOOT, false);

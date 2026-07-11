@@ -96,6 +96,26 @@ void wraith_prompt(
     app->input_after_title[sizeof(app->input_after_title) - 1] = '\0';
     strncpy(app->input_after_cmd, after_cmd ? after_cmd : "", sizeof(app->input_after_cmd) - 1);
     app->input_after_cmd[sizeof(app->input_after_cmd) - 1] = '\0';
+    app->input_launch = false;
+    scene_manager_next_scene(app->scene_manager, WraithSceneInput);
+}
+
+void wraith_prompt_run(
+    WraithApp* app,
+    const char* header,
+    const char* prefix,
+    const char* title,
+    bool is_attack) {
+    furi_assert(app);
+    strncpy(app->input_header, header, sizeof(app->input_header) - 1);
+    app->input_header[sizeof(app->input_header) - 1] = '\0';
+    strncpy(app->input_prefix, prefix, sizeof(app->input_prefix) - 1);
+    app->input_prefix[sizeof(app->input_prefix) - 1] = '\0';
+    strncpy(app->input_after_title, title ? title : "", sizeof(app->input_after_title) - 1);
+    app->input_after_title[sizeof(app->input_after_title) - 1] = '\0';
+    app->input_after_cmd[0] = '\0';
+    app->input_launch = true;
+    app->input_launch_attack = is_attack;
     scene_manager_next_scene(app->scene_manager, WraithSceneInput);
 }
 
